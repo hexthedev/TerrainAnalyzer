@@ -107,9 +107,12 @@ Fig 6: Voronoi graph after non-traversable edges are pruned
 
 #### Step 6: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
 Iteratively increases radius until an object is hit (See Fig 7)
+
 ID defines how much the radius expands iteration. An ID = 1 would check radius =1,2,3,4,....n until an obstacle is hit or the map bound is passed.
+
 #D tells the radius how many angles to cut the circle into when iterating. #D = 4 would check every angle between 0 and 360 with increments of 90 degrees. 
-Stopwatch tests have shown that this is the most costly part of the algorithm. See results for more info.
+
+Stopwatch tests have shown that this is the most costly part of the algorithm.
 
 ![Radius Graph](/images/logo.png)
 Format: ![Pruned Graph](IMAGE COMING SOON)
@@ -142,6 +145,7 @@ Fig 8: Example of completely pruned Voronoi Graph
 
 #### Step 8: Return a simple analysis graph
 The final output of the algorithm feeds AI the following code structure (See Fig 9)
+
 IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
 
 ![Analysis Graph](/images/logo.png)
