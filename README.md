@@ -1,6 +1,8 @@
 # Unity Terrain Analyzer
 Unity based Terrain Analyzer that filters maps by strategic regions based on custom attributes 
 
+
+
 ### General Idea
 VIDEO TO COME...
 
@@ -11,14 +13,17 @@ The Terrain Analyzer explained below is a tool created to automatically analyze 
   * Analysis graph includes system for users to write custom attributes by which each node will be analyzed and given a value (For more precise AI reasoning, and different AI strategies)
  
  
+ 
 ### Understanding the code
 ![UML Diagram of Design](/images/logo.png)
 Format: ![Alt Text](IMAGE COMING SOON)
+
 
 Above is a UML diagram representing the current code. Major scripts' role is listed below
 * Terrain Analysis: Master script that controls the analysis procedure. Responsible for input and output
 * Analyzer: Analyzes map returning a traversability map and Veronoi graph (Used to find choke points)
 * VoronoiFinalizer: Culls nodes in Veronoi Graph until only open regions and choke points are remaining
+
 
 The Algorithm works using the following steps:
 1. Create a 2D grid representing height values and their positions
@@ -29,6 +34,7 @@ The Algorithm works using the following steps:
 6. Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle. 
 7. Use various culling methods to remove all unneeded or unwanted nodes
 8. Return a simple analysis graph
+
 
 Using the Terrain Analyzer
 1. Set up a Unity Terrain (DOES NOT WORK ON NONE UNITY TERRAIN MAPS, FEATURE COMING IN LATER VERSIONS)
@@ -53,10 +59,14 @@ Using the Terrain Analyzer
     * Corridor Constant (CC): Gives a constant variance for corridor size, to stop small corridors retaining nodes. 
 
 
+
 ### Terrain Analysis Details
+
+
 ##### Step 1: Create a 2D grid representing height values and terrain points
 Creates 2D float array of size 100/GX by 100/GY. Grid at position (i,j) represents world space position (i * (TX * GX), j * (TY * GY)). Populates grid using Terrain.sampleHeight(), per grid square. This leaves a grid of height values. 
 Due to float number error, a GX and GY percentage must be chosen which always represents numbers of limited digits. Default percentages are 0.25, 0.5, 1 and 2. Smaller number represent denser grids, more accurate map outputs and more computation time. 
+
 
 ##### Step 2: Make a traversability map representing all movable positions and their connections
 Cycle nodes creating nodes for each grid square within Max Reachable Height. Create edges between nodes that abide by Max Traversable Slope. (See Fig 3)
@@ -65,12 +75,14 @@ Cycle nodes creating nodes for each grid square within Max Reachable Height. Cre
 Format: ![Alt Text](IMAGE COMING SOON)
 Fig 3: Complete traversability map of example map based on parameters
 
+
 ##### Step 3: From traversability map, make a boarder map representing the outline of the movable map
 Create a node map made up of nodes that count as border nodes outlining the moveable area. (See Fig 4)
 
 ![Border Map](/images/logo.png)
 Format: ![Alt Text](IMAGE COMING SOON)
 Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
+
 
 ##### Step 4: Using border map, create a Voronoi graph
 Code used from https://code.google.com/archive/p/fortune-voronoi/ library created by codeproject user BenDi with Mozilla Public License, v. 2.0
@@ -81,13 +93,13 @@ Border nodes do not make up a polygon. This method was chosen because Voronoi gr
 Format: ![Alt Text](IMAGE COMING SOON)
 Fig 5: Naive Voronoi graph generated using board map as independent points, not closed polygon
 
+
 ##### Step 5: Prune all edges with non-traversable nodes
 Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 6)
 
 ![Pruned Voronoi Graph](/images/logo.png)
 Format: ![Pruned Graph](IMAGE COMING SOON)
 Fig 6: Voronoi graph after non-traversable edges are pruned
-
 
 
 ##### Step 6: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
