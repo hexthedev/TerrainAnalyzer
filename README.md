@@ -23,11 +23,104 @@ Above is a UML diagram representing the current code. Major scripts' role is lis
 The Algorithm works using the following steps:
 1. Create a 2D grid representing height values and their positions
 2. Make a traversability map representing all movable positions and their connections
-3. Make a boarder map representing the outline of the movable map
+3. Make a boarder map representing the outline of the traversability map
 4. Using border map, create a Voronoi graph 
 5. Prune all edges with non-traversable nodes
 6. Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle. 
 7. Use various culling methods to remove all unneeded or unwanted nodes
 8. Return a simple analysis graph
+
+Using the Terrain Analyzer
+1. Set up a Unity Terrain (DOES NOT WORK ON NONE UNITY TERRAIN MAPS, FEATURE COMING IN LATER VERSIONS)
+2. Tweek preferences. Parameter explainations listed below:
+  * World Distance
+    * Terrain X (TX): The size in unity globalspace units of the terrain along X axis
+    * Terrain Y (TY): The size in unity globalspace units of the terrain along Z axis
+  * Percentage of Real Space
+    * Grid X Percentage (GX): Each X axis grid line will be percent of real X length
+    * Grid Y Percentage (GY): Each Y axis grid line will be percent of real X length
+  * Map Preferences
+    * Max Reachable Height (MRH): Defines a height above which units cannot reach
+    * Max Traversable Slope (MTS): Defines max change in height still defined as movable between grid squares
+  * Radius Computation
+    * Iteration Distance (ID): Defines distance checked per iteration of radius calculation
+    * Num of Directions (#D): Defines number of directions circle is broken into for checking radius calculations
+  * Pruning Settings
+    * Min Node Radius (MNR): Defines the minimum radius that any one node can have without being pruned
+    * Min Region Radius(MRR): Defines the minimum region size that two nodes can occupy
+    * Max Region Height Difference(MRHD): Defines the maximum height difference two nodes can have an still be considered in the same region
+    * Corridor Percentage: When culling corridor nodes, controls possible variance in same corridor node sizes
+    * Corridor Constant (CC): Gives a constant variance for corridor size, to stop small corridors retaining nodes. 
+
+
+
+### Detail and Illustration
+#####Step 1: Create a 2D grid representing height values and terrain points
+Creates 2D float array of size 100/GX by 100/GY. Grid at position (i,j) represents world space position (i * (TX * GX), j * (TY * GY)). Populates grid using Terrain.sampleHeight(), per grid square. This leaves a grid of height values. 
+Due to float number error, a GX and GY percentage must be chosen which always represents numbers of limited digits. Default percentages are 0.25, 0.5, 1 and 2. Smaller number represent denser grids, more accurate map outputs and more computation time. 
+
+
+
+#####Step 2: Make a traversability map representing all movable positions and their connections
+Cycle nodes creating nodes for each grid square within Max Reachable Height. Create edges between nodes that abide by Max Traversable Slope. (See Fig 3)
+Fig 3: Complete traversability map of example map based on parameters
+
+#####Step 3: From traversability map, make a boarder map representing the outline of the movable map
+Create a node map made up of nodes that count as border nodes outlining the moveable area. (See Fig 4)
+Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
+
+#####Step 4: Using border map, create a Voronoi graph
+Code used from https://code.google.com/archive/p/fortune-voronoi/ library created by codeproject user BenDi with Mozilla Public License, v. 2.0
+Using the above library, a Voronoi graph is created over all nodes. (See Fig 5)
+Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.
+Fig 5: Naive Voronoi graph generated using board map as independent points, not closed polygon
+ 
+
+#####Step 5: Prune all edges with non-traversable nodes
+Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 6)
+Fig 6: Voronoi graph after non-traversable edges are pruned
+
+
+
+#####Step 6: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
+Iteratively increases radius until an object is hit (See Fig 7)
+ID defines how much the radius expands iteration. An ID = 1 would check radius =1,2,3,4,....n until an obstacle is hit or the map bound is passed.
+#D tells the radius how many angles to cut the circle into when iterating. #D = 4 would check every angle between 0 and 360 with increments of 90 degrees. 
+Stopwatch tests have shown that this is the most costly part of the algorithm. See results for more info.
+Fig 7: Shows radius of every node after computation
+
+
+#####Step 7: Use various culling methods to remove all unneeded or unwanted nodes
+Systematically remove nodes from the graph using different properties. The right combination of culls is need to efficiently remove of unimportant nodes. Culling methods are listed below. Most culls run in O(n*d) where n= number of nodes and d the degree of each node. If every node is connected to every other node, this will end up O(n(n-1)), however this is an extremely unlikely scenario that is more likely to occur when there are very few nodes. (See Fig 8)
+Min Radius Cull: Removes all nodes with radius below certain number. 
+Simple O(n) algorithm
+Largest Nodes First: Starting at node with largest radius, removes all nodes within radius of node.
+Sorting Θ(n log n) + O (n(n-1)) [If no node contains another]
+Region Merge: The MRR and MRHD can be tweaked. Region merge looks at each node n and checks if n.neighbours() contains a node within MRR distance. If a node is found, the smaller neighbour is merged into the larger neighbour. 
+O(nd) where d is degree of each node
+Leaf Prune: Any node with one neighbour is considered a leaf. It’s neighbour is considered the parent. If the parent has a larger radius than the leaf,  then the leaf is merged into the parent. Repeated until no nodes are pruned. 
+O(np), where p = the number of times pruning must occur until nothing is pruned
+Triangle Cull: For each node, checks both neighbours. If both neighbours are also neighbours, merges smallest node with largest node.
+O(n*d^2), this has a massive worst case. However, this type of cull should only be performed on very low vertex graphs. Small input numbers make the run time workable in practice. 
+Corridor Prune: If a node n has degree = 2, checks the radius of both neighbours. If both neighbours are within n.Radius()*corrdiorPercentage + corridorConstant - n.Radius, then remove n and connect n’s neighbours.
+O(n)
+Prune Zero Children: (Optional) Nodes can occur that have no children. Especially in regions that are more disconnected and so should only be represented by a single central node. When flying units that can bypass terrain are available this might not be desirable. Otherwise, culling all zero children nodes may be a better option
+O(n)
+The order in which culling is performed in the presented algorithm is as follows:
+Cull Below Radius
+Largest Nodes First
+Region Merge
+Triangle Cull
+Leaf Prune
+Corridor Prune
+Prune Zero Children
+ Fig 8: Example of completely pruned Voronoi Graph
+
+
+#####Step 8: Return a simple analysis graph
+The final output of the algorithm feeds AI the following code structure (See Fig 9)
+IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
+Fig 9: Output structure of Terrain Analysis Algorithm
+
 
 
