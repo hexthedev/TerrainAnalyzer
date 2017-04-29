@@ -65,6 +65,7 @@ Using the Terrain Analyzer
 
 #### Step 1: Create a 2D grid representing height values and terrain points
 Creates 2D float array of size 100/GX by 100/GY. Grid at position (i,j) represents world space position (i * (TX * GX), j * (TY * GY)). Populates grid using Terrain.sampleHeight(), per grid square. This leaves a grid of height values. 
+
 Due to float number error, a GX and GY percentage must be chosen which always represents numbers of limited digits. Default percentages are 0.25, 0.5, 1 and 2. Smaller number represent denser grids, more accurate map outputs and more computation time. 
 
 
@@ -86,7 +87,9 @@ Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
 
 #### Step 4: Using border map, create a Voronoi graph
 Code used from https://code.google.com/archive/p/fortune-voronoi/ library created by codeproject user BenDi with Mozilla Public License, v. 2.0
+
 Using the above library, a Voronoi graph is created over all nodes. (See Fig 5)
+
 Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.
 
 ![Voronoi Graph](/images/logo.png)
