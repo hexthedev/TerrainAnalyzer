@@ -118,7 +118,7 @@ Fig 7: Shows radius of every node after computation
 
 
 #### Step 7: Use various culling methods to remove all unneeded or unwanted nodes
-Systematically remove nodes from the graph using different properties. The right combination of culls is need to efficiently remove of unimportant nodes. Culling methods are listed below. Most culls run in O(n * d) where n= number of nodes and d the degree of each node. If every node is connected to every other node, this will end up O(n(n-1)), however this is an extremely unlikely scenario that is more likely to occur when there are very few nodes. (See Fig 8)
+Systematically remove nodes from the graph using different properties. The right combination of culls is needed to efficiently remove of unimportant nodes. Culling methods are listed below. (See Fig 8)
   * Min Radius Cull: Removes all nodes with radius below certain number. 
   * Largest Nodes First: Starting at node with largest radius, removes all nodes within radius of node.
   * Region Merge: The MRR and MRHD can be tweaked. Region merge looks at each node n and checks if n.neighbours() contains a node within MRR distance. If a node is found, the smaller neighbour is merged into the larger neighbour. 
