@@ -1,12 +1,10 @@
 # Unity Terrain Analyzer
 Unity based Terrain Analyzer that filters maps by strategic regions based on custom attributes 
 
-
-
 ### General Idea
 VIDEO TO COME...
 
-The Terrain Analyzer explained below is a tool created to automatically analyze maps based on characteristics defined by the user. It is designed to return the following objects the user:
+The Terrain Analyzer explained below is a tool created to automatically analyze maps based on characteristics defined by the user. It returns to following:
 * A traversability graph representing a grid based map of all traversable points and their connections (For use in pathfinding)
   * SMALL MODIFICATION NEEDED TO IMPLEMENT THIS FEATURE
 * An analysis graph, representing strategic regions on the map (For use in AI reasoning, and strategy)
