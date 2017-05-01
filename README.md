@@ -70,14 +70,14 @@ Due to float number error, a GX and GY percentage must be chosen which always re
 Cycle nodes creating nodes for each grid square within Max Reachable Height. Create edges between nodes that abide by Max Traversable Slope. (See Fig 3)
 
 ![Traversability Map](/img/02TraversabilityGrid.png)
-Fig 3: Complete traversability map of example map based on parameters
+*Fig 3: Complete traversability map of example map based on parameters*
 
 
 #### Step 3: From traversability map, make a boarder map representing the outline of the movable map
 Create a node map made up of nodes that count as border nodes outlining the moveable area. (See Fig 4)
 
 ![Border Map](/img/03BorderMap.PNG)
-Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
+*Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%*
 
 
 #### Step 4: Using border map, create a Voronoi graph
@@ -88,7 +88,7 @@ Using the above library, a Voronoi graph is created over all nodes.
 Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 5)
 
 ![Voronoi Graph](/img/04Veronoi.PNG)
-Fig 5: Voronoi graph after non-traversable edges are pruned
+*Fig 5: Voronoi graph after non-traversable edges are pruned*
 
 
 #### Step 6: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
@@ -101,7 +101,7 @@ ID defines how much the radius expands iteration. An ID = 1 would check radius =
 Stopwatch tests have shown that this is the most costly part of the algorithm.
 
 ![Radius Graph](/img/logo.png)
-Fig 6: Shows radius of every node after computation
+*Fig 6: Shows radius of every node after computation*
 
 
 #### Step 7: Use various culling methods to remove all unneeded or unwanted nodes
@@ -124,7 +124,7 @@ The order in which culling is performed in the presented algorithm is as follows
 7. Prune Zero Children
 
 ![Complete Graph](/img/logo.png)
-Fig 7: Example of completely pruned Voronoi Graph
+*Fig 7: Example of completely pruned Voronoi Graph*
 
 
 #### Step 8: Return a simple analysis graph
