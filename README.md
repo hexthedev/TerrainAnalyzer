@@ -132,8 +132,8 @@ The final output of the algorithm feeds AI the following code structure (See Fig
 
 IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
 
-![Analysis Graph](/img/logo.png)
-Fig 8: Output structure of Terrain Analysis Algorithm
+![Analysis Graph](/img/07Hill.png)
+*Fig 8: Example attribute output*
 
 
 
