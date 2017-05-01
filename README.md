@@ -69,14 +69,14 @@ Due to float number error, a GX and GY percentage must be chosen which always re
 #### Step 2: Make a traversability map representing all movable positions and their connections
 Cycle nodes creating nodes for each grid square within Max Reachable Height. Create edges between nodes that abide by Max Traversable Slope. (See Fig 3)
 
-![Traversability Map](/images/02TraversabilityGrid.png)
+![Traversability Map](/img/02TraversabilityGrid.png)
 Fig 3: Complete traversability map of example map based on parameters
 
 
 #### Step 3: From traversability map, make a boarder map representing the outline of the movable map
 Create a node map made up of nodes that count as border nodes outlining the moveable area. (See Fig 4)
 
-![Border Map](/images/03BorderMap.png)
+![Border Map](/img/03BorderMap.png)
 Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
 
 
@@ -87,7 +87,7 @@ Using the above library, a Voronoi graph is created over all nodes.
 
 Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 5)
 
-![Voronoi Graph](/images/04Veronoi.png)
+![Voronoi Graph](/img/04Veronoi.png)
 Fig 5: Voronoi graph after non-traversable edges are pruned
 
 
@@ -100,7 +100,7 @@ ID defines how much the radius expands iteration. An ID = 1 would check radius =
 
 Stopwatch tests have shown that this is the most costly part of the algorithm.
 
-![Radius Graph](/images/logo.png)
+![Radius Graph](/img/logo.png)
 Fig 6: Shows radius of every node after computation
 
 
@@ -123,7 +123,7 @@ The order in which culling is performed in the presented algorithm is as follows
 6. Corridor Prune
 7. Prune Zero Children
 
-![Complete Graph](/images/logo.png)
+![Complete Graph](/img/logo.png)
 Fig 7: Example of completely pruned Voronoi Graph
 
 
@@ -132,7 +132,7 @@ The final output of the algorithm feeds AI the following code structure (See Fig
 
 IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
 
-![Analysis Graph](/images/logo.png)
+![Analysis Graph](/img/logo.png)
 Fig 8: Output structure of Terrain Analysis Algorithm
 
 
