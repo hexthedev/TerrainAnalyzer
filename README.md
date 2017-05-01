@@ -76,7 +76,7 @@ Fig 3: Complete traversability map of example map based on parameters
 #### Step 3: From traversability map, make a boarder map representing the outline of the movable map
 Create a node map made up of nodes that count as border nodes outlining the moveable area. (See Fig 4)
 
-![Border Map](/img/03BorderMap.png)
+![Border Map](/img/03BorderMap.PNG)
 Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
 
 
@@ -87,7 +87,7 @@ Using the above library, a Voronoi graph is created over all nodes.
 
 Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 5)
 
-![Voronoi Graph](/img/04Veronoi.png)
+![Voronoi Graph](/img/04Veronoi.PNG)
 Fig 5: Voronoi graph after non-traversable edges are pruned
 
 
