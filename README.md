@@ -13,7 +13,7 @@ The Terrain Analyzer explained below is a tool created to automatically analyze 
  
  
 ### Understanding the code
-![UML Diagram of Design](/images/logo.png)
+![UML Diagram of Design](/img/01Analyze.png)
 Format: ![Alt Text](IMAGE COMING SOON)
 
 
@@ -70,7 +70,7 @@ Due to float number error, a GX and GY percentage must be chosen which always re
 #### Step 2: Make a traversability map representing all movable positions and their connections
 Cycle nodes creating nodes for each grid square within Max Reachable Height. Create edges between nodes that abide by Max Traversable Slope. (See Fig 3)
 
-![Traversability Map](/images/logo.png)
+![Traversability Map](/images/02TraversabilityGrid.png)
 Format: ![Alt Text](IMAGE COMING SOON)
 Fig 3: Complete traversability map of example map based on parameters
 
@@ -78,7 +78,7 @@ Fig 3: Complete traversability map of example map based on parameters
 #### Step 3: From traversability map, make a boarder map representing the outline of the movable map
 Create a node map made up of nodes that count as border nodes outlining the moveable area. (See Fig 4)
 
-![Border Map](/images/logo.png)
+![Border Map](/images/03BorderMap.png)
 Format: ![Alt Text](IMAGE COMING SOON)
 Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
 
@@ -86,25 +86,17 @@ Fig 4: Border map created on test terrain “Crater” with grid density = 0.5%
 #### Step 4: Using border map, create a Voronoi graph
 Code used from https://code.google.com/archive/p/fortune-voronoi/ library created by codeproject user BenDi with Mozilla Public License, v. 2.0
 
-Using the above library, a Voronoi graph is created over all nodes. (See Fig 5)
+Using the above library, a Voronoi graph is created over all nodes.
 
-Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.
+Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 5)
 
-![Voronoi Graph](/images/logo.png)
-Format: ![Alt Text](IMAGE COMING SOON)
-Fig 5: Naive Voronoi graph generated using board map as independent points, not closed polygon
-
-
-#### Step 5: Prune all edges with non-traversable nodes
-Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 6)
-
-![Pruned Voronoi Graph](/images/logo.png)
+![Voronoi Graph](/images/04Veronoi.png)
 Format: ![Pruned Graph](IMAGE COMING SOON)
-Fig 6: Voronoi graph after non-traversable edges are pruned
+Fig 5: Voronoi graph after non-traversable edges are pruned
 
 
 #### Step 6: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
-Iteratively increases radius until an object is hit (See Fig 7)
+Iteratively increases radius until an object is hit (See Fig 6)
 
 ID defines how much the radius expands iteration. An ID = 1 would check radius =1,2,3,4,....n until an obstacle is hit or the map bound is passed.
 
@@ -114,11 +106,11 @@ Stopwatch tests have shown that this is the most costly part of the algorithm.
 
 ![Radius Graph](/images/logo.png)
 Format: ![Pruned Graph](IMAGE COMING SOON)
-Fig 7: Shows radius of every node after computation
+Fig 6: Shows radius of every node after computation
 
 
 #### Step 7: Use various culling methods to remove all unneeded or unwanted nodes
-Systematically remove nodes from the graph using different properties. The right combination of culls is needed to efficiently remove of unimportant nodes. Culling methods are listed below. (See Fig 8)
+Systematically remove nodes from the graph using different properties. The right combination of culls is needed to efficiently remove of unimportant nodes. Culling methods are listed below. (See Fig 7)
   * Min Radius Cull: Removes all nodes with radius below certain number. 
   * Largest Nodes First: Starting at node with largest radius, removes all nodes within radius of node.
   * Region Merge: The MRR and MRHD can be tweaked. Region merge looks at each node n and checks if n.neighbours() contains a node within MRR distance. If a node is found, the smaller neighbour is merged into the larger neighbour. 
@@ -138,17 +130,17 @@ The order in which culling is performed in the presented algorithm is as follows
 
 ![Complete Graph](/images/logo.png)
 Format: ![Pruned Graph](IMAGE COMING SOON)
-Fig 8: Example of completely pruned Voronoi Graph
+Fig 7: Example of completely pruned Voronoi Graph
 
 
 #### Step 8: Return a simple analysis graph
-The final output of the algorithm feeds AI the following code structure (See Fig 9)
+The final output of the algorithm feeds AI the following code structure (See Fig 8)
 
 IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
 
 ![Analysis Graph](/images/logo.png)
 Format: ![Pruned Graph](IMAGE COMING SOON)
-Fig 9: Output structure of Terrain Analysis Algorithm
+Fig 8: Output structure of Terrain Analysis Algorithm
 
 
 
