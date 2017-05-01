@@ -132,8 +132,8 @@ The final output of the algorithm feeds AI the following code structure (See Fig
 
 IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
 
-![Analysis Graph](/img/07Hill.png)
-*Fig 8: Example attribute output*
+![Analysis Graph](/img/07Hill.PNG)
+*Fig 8: Example attribute graph. Takes same structure as analysis graph, but applies float values as attributes based on IAttribute interface. The above graph is using a custom "hill" attribute which gives each node a value based on it's height compared to it's lowest neighbour.*
 
 
 
