@@ -91,7 +91,7 @@ Border nodes do not make up a polygon. This method was chosen because Voronoi gr
 *Fig 4: Voronoi graph after non-traversable edges are pruned*
 
 
-#### Step 6: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
+#### Step 5: Compute a radius for all remaining Voronoi graph nodes, representing the nodes distance from an untraversable obstacle.
 Iteratively increases radius until an object is hit (See Fig 6)
 
 ID defines how much the radius expands iteration. An ID = 1 would check radius =1,2,3,4,....n until an obstacle is hit or the map bound is passed.
@@ -104,7 +104,7 @@ Stopwatch tests have shown that this is the most costly part of the algorithm.
 *Fig 5: Shows radius of every node after computation*
 
 
-#### Step 7: Use various culling methods to remove all unneeded or unwanted nodes
+#### Step 6: Use various culling methods to remove all unneeded or unwanted nodes
 Systematically remove nodes from the graph using different properties. The right combination of culls is needed to efficiently remove of unimportant nodes. Culling methods are listed below. (See Fig 7)
   * Min Radius Cull: Removes all nodes with radius below certain number. 
   * Largest Nodes First: Starting at node with largest radius, removes all nodes within radius of node.
@@ -127,7 +127,7 @@ The order in which culling is performed in the presented algorithm is as follows
 *Fig 6: Example of completely pruned Voronoi Graph*
 
 
-#### Step 8: Return a simple analysis graph
+#### Step 7: Return a simple analysis graph
 The final output of the algorithm feeds AI the following code structure (See Fig 8)
 
 IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
