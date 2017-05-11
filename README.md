@@ -16,7 +16,7 @@ The Terrain Analyzer explained below is a tool created to automatically analyze 
 ![UML Diagram of Design](/img/01Analyze.png)
 
 
-*Fig 1: Above is a UML diagram representing the current code. Major scripts' role is listed below*
+*Fig 1: Above is a UML diagram representing the current code. Major scripts roles are listed below*
 * Terrain Analysis: Master script that controls the analysis procedure. Responsible for input and output
 * Analyzer: Analyzes map returning a traversability map and Veronoi graph (Used to find choke points)
 * VoronoiFinalizer: Culls nodes in Veronoi Graph until only open regions and choke points are remaining
@@ -51,7 +51,7 @@ Using the Terrain Analyzer
   * Pruning Settings
     * Min Node Radius (MNR): Defines the minimum radius that any one node can have without being pruned
     * Min Region Radius(MRR): Defines the minimum region size that two nodes can occupy
-    * Max Region Height Difference(MRHD): Defines the maximum height difference two nodes can have an still be considered in the same region
+    * Max Region Height Difference(MRHD): Defines the maximum height difference two nodes can have and still be considered in the same region
     * Corridor Percentage: When culling corridor nodes, controls possible variance in same corridor node sizes
     * Corridor Constant (CC): Gives a constant variance for corridor size, to stop small corridors retaining nodes. 
 
@@ -85,7 +85,7 @@ Code used from https://code.google.com/archive/p/fortune-voronoi/ library create
 
 Using the above library, a Voronoi graph is created over all nodes.
 
-Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods.Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 5)
+Border nodes do not make up a polygon. This method was chosen because Voronoi graphs only work over 2D surfaces, and height is an important aspect in these terrains. Instead the naive Voronoi is generated, then culled using various methods. Edges containing vertices outside of map or at unreachable heights are pruned (See Fig 5).
 
 ![Voronoi Graph](/img/04Veronoi.PNG)
 *Fig 4: Voronoi graph after non-traversable edges are pruned*
@@ -105,7 +105,7 @@ Stopwatch tests have shown that this is the most costly part of the algorithm.
 
 
 #### Step 6: Use various culling methods to remove all unneeded or unwanted nodes
-Systematically remove nodes from the graph using different properties. The right combination of culls is needed to efficiently remove of unimportant nodes. Culling methods are listed below. (See Fig 7)
+Systematically remove nodes from the graph using different properties. The right combination of culls is needed to efficiently remove any unimportant nodes. Culling methods are listed below. (See Fig 7)
   * Min Radius Cull: Removes all nodes with radius below certain number. 
   * Largest Nodes First: Starting at node with largest radius, removes all nodes within radius of node.
   * Region Merge: The MRR and MRHD can be tweaked. Region merge looks at each node n and checks if n.neighbours() contains a node within MRR distance. If a node is found, the smaller neighbour is merged into the larger neighbour. 
@@ -130,7 +130,7 @@ The order in which culling is performed in the presented algorithm is as follows
 #### Step 7: Return a simple analysis graph
 The final output of the algorithm feeds AI the following code structure (See Fig 8)
 
-IAttribute is an interface allowing anyone using the code to write their own attributes. Attributes calculation code is written in the calculate() function and can represent anything. It must output an number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
+IAttribute is an interface allowing anyone using the code to write their own attributes. Attribute calculation code is written in the calculate() function and can represent anything. It must output a number between 0 and 1. Sometimes for unity world calculations, the creation of a calculator class extending MonoBehaviour is necessary since MonoBehaviour is required to interact with unity game objects. 
 
 ![Analysis Graph](/img/07Hill.PNG)
 *Fig 8: Example attribute graph. Takes same structure as analysis graph, but applies float values as attributes based on IAttribute interface. The above graph is using a custom "hill" attribute which gives each node a value based on it's height compared to it's lowest neighbour.*
